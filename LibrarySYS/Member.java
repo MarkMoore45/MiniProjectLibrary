@@ -11,8 +11,8 @@ public class Member {
     private int phone;
     private static int count = 1;
 
-    public  Member(){
-        this("NA","NA","NA","NA","NA",0);
+    public Member() {
+        this("NA", "NA", "NA", "NA", "NA", 0);
     }
 
     public Member(String forename, String surname, String password, String email, String address, int phone) {
