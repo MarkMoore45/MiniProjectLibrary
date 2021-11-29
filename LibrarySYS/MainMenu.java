@@ -163,13 +163,30 @@ class LibrarySystem extends JFrame implements ActionListener {
         //validate
         ISBN = JOptionPane.showInputDialog("Enter Books's ISBN");
 
+
         title = JOptionPane.showInputDialog("Enter Books's Title");
+        if(title.length()>40){
+            title = JOptionPane.showInputDialog("Title is too long. Please enter a different title");
+        }
+        else if(title == null || title.equals("") || title.equals(" ")){
+            title = JOptionPane.showInputDialog("Title must not be empty");
+        }
 
         author = JOptionPane.showInputDialog("Enter Books's Author");
+        if(author.length()>40){
+            author = JOptionPane.showInputDialog("Author is too long. Please enter a different author");
+        }
+        else if(author == null || author.equals("") || author.equals(" ")){
+            title = JOptionPane.showInputDialog("Author must not be empty");
+        }
 
         genre = (String) JOptionPane.showInputDialog(null,"Book","Book",JOptionPane.QUESTION_MESSAGE,null,genreList,genreList[0]);
 
         pages = Integer.parseInt(JOptionPane.showInputDialog("Enter the number of pages in the book"));
+        if(pages <= 0 || pages > 9999){
+            pages = Integer.parseInt(JOptionPane.showInputDialog("Pages must be greater than 0 and less than 10,000"));
+        }
+
 
         book = new Book(ISBN,title,author,genre,pages,'A');
         books.add(book);
@@ -189,7 +206,7 @@ class LibrarySystem extends JFrame implements ActionListener {
             Iterator<Book> iterator = books.iterator();
 
             while(iterator.hasNext()) {
-                bookCombo.addItem(iterator.next().getTitle() +  "\n");
+                bookCombo.addItem(iterator.next().getTitle() + "\n");
             }
 
             JOptionPane.showMessageDialog(null,bookCombo,"Select Book to view details",JOptionPane.PLAIN_MESSAGE);
@@ -226,7 +243,12 @@ class LibrarySystem extends JFrame implements ActionListener {
     }
 
     public void updateBook(){
+        String ISBN = "1";
+        String title = "1";
+        String author = "1";
+        int pages = 1;
         final String [] genreList = {"Non-Fiction","Fiction","Sci-Fi","Horror","Romance","Historic","Sports & Leisure","Fantasy"};
+        int j;
 
         JComboBox bookCombo = new JComboBox();
         JTextArea output = new JTextArea();
@@ -247,10 +269,27 @@ class LibrarySystem extends JFrame implements ActionListener {
             output.append(books.get(selected).toString());
 
             book.setISBN(JOptionPane.showInputDialog("Enter Books's ISBN"));
+
+
             book.setTitle(JOptionPane.showInputDialog("Enter Books's Title"));
+            if(title.length()>40){
+                title = JOptionPane.showInputDialog("Title is too long. Please enter a different title");
+            }
+            else if(title == null || title.equals("") || title.equals(" ")){
+                title = JOptionPane.showInputDialog("Title must not be empty");
+            }
             book.setAuthor(JOptionPane.showInputDialog("Enter Books's Author"));
+            if(author.length()>40){
+                author = JOptionPane.showInputDialog("Author is too long. Please enter a different author");
+            }
+            else if(author == null || author.equals("") || author.equals(" ")){
+                title = JOptionPane.showInputDialog("Author must not be empty");
+            }
             book.setGenre((String) JOptionPane.showInputDialog(null,"Book","Book",JOptionPane.QUESTION_MESSAGE,null,genreList,genreList[0]));
             book.setPages(Integer.parseInt(JOptionPane.showInputDialog("Enter the number of pages in the book")));
+            if(pages <= 0 || pages > 9999){
+                pages = Integer.parseInt(JOptionPane.showInputDialog("Pages must be greater than 0 and less than 10,000"));
+            }
 
             JOptionPane.showMessageDialog(null,"Updated Books details");
 
@@ -267,10 +306,102 @@ class LibrarySystem extends JFrame implements ActionListener {
 
         //validate
         forename = JOptionPane.showInputDialog("Enter Member's Forename");
+        if(forename.length()>30){
+            forename = JOptionPane.showInputDialog("Forename is too long. Please enter a different forename");
+        }
+        else if(forename == null || forename.equals("") || forename.equals(" ")){
+            forename = JOptionPane.showInputDialog("Forename must not be empty");
+        }
+
         surname = JOptionPane.showInputDialog("Enter Member's Surname");
+        if(surname.length()>30){
+            surname = JOptionPane.showInputDialog("Surname is too long. Please enter a different forename");
+        }
+        else if(surname == null || surname.equals("") || surname.equals(" ")){
+            surname = JOptionPane.showInputDialog("Surname must not be empty");
+        }
+
         email = JOptionPane.showInputDialog("Enter Member's E-mail");
+        int locationOfAtSymbol=0,j;
+        char ch;
+        String domainName="",recipient="";
+        boolean valid = false;
+
+        while(!valid)
+        {
+            if(email.length()>=7 && email.length()<=322)
+            {
+                locationOfAtSymbol = email.indexOf('@');
+
+                if(locationOfAtSymbol!=-1)
+                    if(email.endsWith(".com") || email.endsWith(".org") || email.endsWith(".net") || email.endsWith(".ie"))
+                    {
+                        recipient = email.substring(0,locationOfAtSymbol);
+
+                        if(recipient.length()>=1 && recipient.length()<=64)
+                        {
+                            for(j=0;j<recipient.length();j++)
+                            {
+                                ch = recipient.charAt(j);
+
+                                if(!Character.isDigit(ch) && !Character.isLetter(ch) && ch!='-' && ch!='.' && ch!='_')
+                                    break;
+                            }
+
+                            if(j==recipient.length())
+                            {
+                                if(email.endsWith("e"))
+                                    domainName = email.substring(locationOfAtSymbol+1,email.length()-3);
+                                else
+                                    domainName = email.substring(locationOfAtSymbol+1,email.length()-4);
+
+                                if(domainName.length()>=2 && domainName.length()<=253)
+                                {
+                                    for(j=0;j<domainName.length();j++)
+                                    {
+                                        ch = domainName.charAt(j);
+
+                                        if(!Character.isDigit(ch) && !Character.isLetter(ch) && ch!='-' && ch!='.')
+                                            break;
+                                    }
+
+                                    if(j==domainName.length())
+                                        valid = true;
+                                    else
+                                        email = JOptionPane.showInputDialog("Invalid! Domain name must only contain letters, digits, dashes and dots");
+                                }
+                                else
+                                    email = JOptionPane.showInputDialog("Invalid! Domain name must contain between 2 and 253 characters inclusive");
+                            }
+                            else
+                                email = JOptionPane.showInputDialog("Invalid! Recipient name must only contain letters, digits, dashes, dots and underscores");
+                        }
+                        else
+                            email = JOptionPane.showInputDialog("Invalid! Recipient name must contain between 1 and 64 characters inclusive");
+                    }
+                    else
+                        email = JOptionPane.showInputDialog("Invalid! Email value must end with .com   .org   .net or .ie");
+                else
+                    email = JOptionPane.showInputDialog("Invalid! Email value must contain an @ symbol");
+            }
+            else
+                email = JOptionPane.showInputDialog("Invalid! Email value must have between 7 and 322 characters inclusive");
+        }
+
         password = JOptionPane.showInputDialog("Enter Member's Password");
+        if(password.length()>20 || password.length()<=5){
+            member.setPassword(JOptionPane.showInputDialog("Password must be between 6 and 20 characters. Please enter a different password"));
+        }
+        else if(password == null || password.equals("") || password.equals(" ")){
+            member.setSurname(JOptionPane.showInputDialog("Password must not be empty"));
+        }
         address = JOptionPane.showInputDialog("Enter Member's Address");
+        if(address.length()>30){
+            member.setAddress(JOptionPane.showInputDialog("Address is too long. Please enter a different address"));
+        }
+        else if(address == null || address.equals("") || address.equals(" ")){
+            member.setSurname(JOptionPane.showInputDialog("Address must not be empty"));
+        }
         phone = Integer.parseInt(JOptionPane.showInputDialog("Enter Member's Phone Number"));
 
         member = new Member(forename,surname,email,password,address,phone);
@@ -328,6 +459,12 @@ class LibrarySystem extends JFrame implements ActionListener {
     }
 
     public void updateMember() {
+        String forename = "0";
+        String surname = "0";
+        String password = "0";
+        String email = "0";
+        String address = "0";
+        int phone = 0;
 
         JComboBox memberCombo = new JComboBox();
         JTextArea output = new JTextArea();
@@ -348,10 +485,102 @@ class LibrarySystem extends JFrame implements ActionListener {
             output.append(members.get(selected).toString());
 
             member.setForename(JOptionPane.showInputDialog("Enter Member's Forename"));
+            if(forename.length()>30){
+                member.setForename(JOptionPane.showInputDialog("Forename is too long. Please enter a different forename"));
+            }
+            else if(forename == null || forename.equals("") || forename.equals(" ")){
+                member.setForename(JOptionPane.showInputDialog("Forename must not be empty"));
+            }
+
             member.setSurname(JOptionPane.showInputDialog("Enter Member's Surname"));
+            if(surname.length()>30){
+                member.setSurname(JOptionPane.showInputDialog("Surname is too long. Please enter a different forename"));
+            }
+            else if(surname == null || surname.equals("") || surname.equals(" ")){
+                member.setSurname(JOptionPane.showInputDialog("Surname must not be empty"));
+            }
+
             member.setEmail(JOptionPane.showInputDialog("Enter Member's E-mail"));
+            int locationOfAtSymbol=0,j;
+            char ch;
+            String domainName="",recipient="";
+            boolean valid = false;
+
+            while(!valid)
+            {
+                if(email.length()>=7 && email.length()<=322)
+                {
+                    locationOfAtSymbol = email.indexOf('@');
+
+                    if(locationOfAtSymbol!=-1)
+                        if(email.endsWith(".com") || email.endsWith(".org") || email.endsWith(".net") || email.endsWith(".ie"))
+                        {
+                            recipient = email.substring(0,locationOfAtSymbol);
+
+                            if(recipient.length()>=1 && recipient.length()<=64)
+                            {
+                                for(j=0;j<recipient.length();j++)
+                                {
+                                    ch = recipient.charAt(j);
+
+                                    if(!Character.isDigit(ch) && !Character.isLetter(ch) && ch!='-' && ch!='.' && ch!='_')
+                                        break;
+                                }
+
+                                if(j==recipient.length())
+                                {
+                                    if(email.endsWith("e"))
+                                        domainName = email.substring(locationOfAtSymbol+1,email.length()-3);
+                                    else
+                                        domainName = email.substring(locationOfAtSymbol+1,email.length()-4);
+
+                                    if(domainName.length()>=2 && domainName.length()<=253)
+                                    {
+                                        for(j=0;j<domainName.length();j++)
+                                        {
+                                            ch = domainName.charAt(j);
+
+                                            if(!Character.isDigit(ch) && !Character.isLetter(ch) && ch!='-' && ch!='.')
+                                                break;
+                                        }
+
+                                        if(j==domainName.length())
+                                            valid = true;
+                                        else
+                                            email = JOptionPane.showInputDialog("Invalid! Domain name must only contain letters, digits, dashes and dots");
+                                    }
+                                    else
+                                        email = JOptionPane.showInputDialog("Invalid! Domain name must contain between 2 and 253 characters inclusive");
+                                }
+                                else
+                                    email = JOptionPane.showInputDialog("Invalid! Recipient name must only contain letters, digits, dashes, dots and underscores");
+                            }
+                            else
+                                email = JOptionPane.showInputDialog("Invalid! Recipient name must contain between 1 and 64 characters inclusive");
+                        }
+                        else
+                            email = JOptionPane.showInputDialog("Invalid! Email value must end with .com   .org   .net or .ie");
+                    else
+                        email = JOptionPane.showInputDialog("Invalid! Email value must contain an @ symbol");
+                }
+                else
+                    email = JOptionPane.showInputDialog("Invalid! Email value must have between 7 and 322 characters inclusive");
+            }
+
             member.setPassword(JOptionPane.showInputDialog("Enter Member's Password"));
+            if(password.length()>20 || password.length()<=5){
+                member.setPassword(JOptionPane.showInputDialog("Password must be between 6 and 20 characters. Please enter a different password"));
+            }
+            else if(password == null || password.equals("") || password.equals(" ")){
+                member.setSurname(JOptionPane.showInputDialog("Password must not be empty"));
+            }
             member.setAddress(JOptionPane.showInputDialog("Enter Member's Address"));
+            if(address.length()>30){
+                member.setAddress(JOptionPane.showInputDialog("Address is too long. Please enter a different address"));
+            }
+            else if(address == null || address.equals("") || address.equals(" ")){
+                member.setSurname(JOptionPane.showInputDialog("Address must not be empty"));
+            }
             member.setPhone(Integer.parseInt(JOptionPane.showInputDialog("Enter Member's Phone Number")));
 
 
