@@ -27,15 +27,6 @@ class LibrarySystem extends JFrame implements ActionListener {
 
         setLayout(new GridBagLayout());
 
-        try {
-            setIconImage(new ImageIcon(getClass().getResource("book_logo.png")).getImage());
-        }
-        catch(Exception ex) {
-
-            JOptionPane.showMessageDialog(null,"Invalid Logo Image File in Main Screen");
-        }
-
-
         createBookMenu();
         createMemberMenu();
         createLoanMenu();
@@ -160,9 +151,52 @@ class LibrarySystem extends JFrame implements ActionListener {
         int pages;
         final String [] genreList = {"Non-Fiction","Fiction","Sci-Fi","Horror","Romance","Historic","Sports & Leisure","Fantasy"};
 
-        //validate
         ISBN = JOptionPane.showInputDialog("Enter Books's ISBN");
 
+        while(!ISBN.equals(""))
+        {
+            boolean valid = false;
+
+            while(!valid)
+            {
+                if(ISBN.length()==10)
+                {
+                    int j;
+                    for(j=0; j<=8; j++)
+                        if(!Character.isDigit(ISBN.charAt(j)))
+                            break;
+
+                    if(j==9)
+                        if(Character.isDigit(ISBN.charAt(9)) || ISBN.charAt(9)=='X' || ISBN.charAt(9)=='x')
+                        {
+                            int sum=0;
+                            int lastCharAsInt;
+
+                            for(j=0;j<=8;j++)
+                                sum+=Character.getNumericValue(ISBN.charAt(j))*(10-j);
+
+                            if(Character.isDigit(ISBN.charAt(9)))
+                                lastCharAsInt = Character.getNumericValue(ISBN.charAt(9));
+                            else
+                                lastCharAsInt = 10;
+
+                            if(11-sum%11 == lastCharAsInt)
+                            {
+                                valid = true;
+                            }
+                            else
+                                ISBN = JOptionPane.showInputDialog("Invalid! ISBN fails the golden rule. Please re-enter");
+                        }
+                        else
+                            ISBN = JOptionPane.showInputDialog("Invalid! Last character must be a digit, an 'X' or an 'x'. Please re-enter");
+                    else
+                        ISBN = JOptionPane.showInputDialog("Invalid! First 9 characters must be digits. Please re-enter");
+                }
+                else
+                    ISBN = JOptionPane.showInputDialog("Invalid! ISBN must have exactly 10 characters. Please re-enter");
+            }
+            ISBN = JOptionPane.showInputDialog("Please enter another ISBN");
+        }
 
         title = JOptionPane.showInputDialog("Enter Books's Title");
         if(title.length()>40){
@@ -177,20 +211,23 @@ class LibrarySystem extends JFrame implements ActionListener {
             author = JOptionPane.showInputDialog("Author is too long. Please enter a different author");
         }
         else if(author == null || author.equals("") || author.equals(" ")){
-            title = JOptionPane.showInputDialog("Author must not be empty");
+            author = JOptionPane.showInputDialog("Author must not be empty");
         }
 
-        genre = (String) JOptionPane.showInputDialog(null,"Book","Book",JOptionPane.QUESTION_MESSAGE,null,genreList,genreList[0]);
+        genre = (String) JOptionPane.showInputDialog(null,"Book Genre","Book",JOptionPane.QUESTION_MESSAGE,null,genreList,genreList[0]);
+        if(genre == null){
+            genre = (String) JOptionPane.showInputDialog(null,"Genre must be selected","Book",JOptionPane.ERROR_MESSAGE,null,genreList,genreList[0]);
+        }
 
         pages = Integer.parseInt(JOptionPane.showInputDialog("Enter the number of pages in the book"));
         if(pages <= 0 || pages > 9999){
             pages = Integer.parseInt(JOptionPane.showInputDialog("Pages must be greater than 0 and less than 10,000"));
         }
 
-
         book = new Book(ISBN,title,author,genre,pages,'A');
         books.add(book);
         JOptionPane.showMessageDialog(null,"Book '" + title + "' added to the system");
+
     }
 
     public void viewBooks() {
@@ -215,6 +252,8 @@ class LibrarySystem extends JFrame implements ActionListener {
             output.append(books.get(selected).toString());
 
             JOptionPane.showMessageDialog(null,output,"Book Details",JOptionPane.PLAIN_MESSAGE);
+
+
         }
     }
 
@@ -239,6 +278,7 @@ class LibrarySystem extends JFrame implements ActionListener {
             books.remove(selected);
 
             JOptionPane.showMessageDialog(null, "Book Removed", "Removed", JOptionPane.INFORMATION_MESSAGE);
+
         }
     }
 
@@ -247,8 +287,8 @@ class LibrarySystem extends JFrame implements ActionListener {
         String title = "1";
         String author = "1";
         int pages = 1;
+        String genre = "1";
         final String [] genreList = {"Non-Fiction","Fiction","Sci-Fi","Horror","Romance","Historic","Sports & Leisure","Fantasy"};
-        int j;
 
         JComboBox bookCombo = new JComboBox();
         JTextArea output = new JTextArea();
@@ -269,6 +309,50 @@ class LibrarySystem extends JFrame implements ActionListener {
             output.append(books.get(selected).toString());
 
             book.setISBN(JOptionPane.showInputDialog("Enter Books's ISBN"));
+            while(!ISBN.equals(""))
+            {
+                boolean valid = false;
+
+                while(!valid)
+                {
+                    if(ISBN.length()==10)
+                    {
+                        int j;
+                        for(j=0; j<=8; j++)
+                            if(!Character.isDigit(ISBN.charAt(j)))
+                                break;
+
+                        if(j==9)
+                            if(Character.isDigit(ISBN.charAt(9)) || ISBN.charAt(9)=='X' || ISBN.charAt(9)=='x')
+                            {
+                                int sum=0;
+                                int lastCharAsInt;
+
+                                for(j=0;j<=8;j++)
+                                    sum+=Character.getNumericValue(ISBN.charAt(j))*(10-j);
+
+                                if(Character.isDigit(ISBN.charAt(9)))
+                                    lastCharAsInt = Character.getNumericValue(ISBN.charAt(9));
+                                else
+                                    lastCharAsInt = 10;
+
+                                if(11-sum%11 == lastCharAsInt)
+                                {
+                                    valid = true;
+                                }
+                                else
+                                    ISBN = JOptionPane.showInputDialog("Invalid! ISBN fails the golden rule. Please re-enter");
+                            }
+                            else
+                                ISBN = JOptionPane.showInputDialog("Invalid! Last character must be a digit, an 'X' or an 'x'. Please re-enter");
+                        else
+                            ISBN = JOptionPane.showInputDialog("Invalid! First 9 characters must be digits. Please re-enter");
+                    }
+                    else
+                        ISBN = JOptionPane.showInputDialog("Invalid! ISBN must have exactly 10 characters. Please re-enter");
+                }
+                ISBN = JOptionPane.showInputDialog("Please enter another ISBN");
+            }
 
 
             book.setTitle(JOptionPane.showInputDialog("Enter Books's Title"));
@@ -286,6 +370,10 @@ class LibrarySystem extends JFrame implements ActionListener {
                 title = JOptionPane.showInputDialog("Author must not be empty");
             }
             book.setGenre((String) JOptionPane.showInputDialog(null,"Book","Book",JOptionPane.QUESTION_MESSAGE,null,genreList,genreList[0]));
+            if(genre == null){
+                genre = (String) JOptionPane.showInputDialog(null,"Genre must be selected","Book",JOptionPane.ERROR_MESSAGE,null,genreList,genreList[0]);
+            }
+
             book.setPages(Integer.parseInt(JOptionPane.showInputDialog("Enter the number of pages in the book")));
             if(pages <= 0 || pages > 9999){
                 pages = Integer.parseInt(JOptionPane.showInputDialog("Pages must be greater than 0 and less than 10,000"));
@@ -301,8 +389,9 @@ class LibrarySystem extends JFrame implements ActionListener {
         String surname;
         String password;
         String email;
+        String dateOfBirth;
         String address;
-        int phone;
+        String phone;
 
         //validate
         forename = JOptionPane.showInputDialog("Enter Member's Forename");
@@ -388,6 +477,48 @@ class LibrarySystem extends JFrame implements ActionListener {
                 email = JOptionPane.showInputDialog("Invalid! Email value must have between 7 and 322 characters inclusive");
         }
 
+        dateOfBirth = JOptionPane.showInputDialog("Please enter the date of birth in the form dd-mm-yy");
+        {
+            if(dateOfBirth.length()==8)
+                if(Character.isDigit(dateOfBirth.charAt(0)) && Character.isDigit(dateOfBirth.charAt(1)))
+                {
+                    int dayPart = Integer.parseInt(dateOfBirth.substring(0,2));
+
+                    if(dayPart>=1 && dayPart<=31)
+                        if(dateOfBirth.charAt(2)=='-')
+                            if(Character.isDigit(dateOfBirth.charAt(3)) && Character.isDigit(dateOfBirth.charAt(4)))
+                            {
+                                int monthPart = Integer.parseInt(dateOfBirth.substring(3, 5));
+
+                                if(monthPart>=1 && monthPart<=12)
+                                    if(dateOfBirth.charAt(5)=='-')
+                                        if(Character.isDigit(dateOfBirth.charAt(6)) && Character.isDigit(dateOfBirth.charAt(7)))
+                                            if((monthPart == 1 || monthPart == 3 || monthPart == 5 || monthPart == 7 || monthPart == 8 || monthPart == 10 ||
+                                                    monthPart == 12) && dayPart<=31 || (monthPart == 4 || monthPart == 6 || monthPart == 9 || monthPart == 11) &&
+                                                    dayPart<=30 || monthPart == 2 && dayPart<=28) {
+                                            }
+                                            else
+                                                dateOfBirth = JOptionPane.showInputDialog("Invalid! Too many days for this month value - Please re-enter");
+                                        else
+                                            dateOfBirth = JOptionPane.showInputDialog("Invalid! Year part must both be digits - Please re-enter");
+                                    else
+                                        dateOfBirth = JOptionPane.showInputDialog("Invalid! Sixth character must be a dash - Please re-enter");
+                                else
+                                    dateOfBirth = JOptionPane.showInputDialog("Invalid! Month value must be <= 12 - Please re-enter");
+                            }
+                            else
+                                dateOfBirth = JOptionPane.showInputDialog("Invalid! Month part must both be digits - Please re-enter");
+                        else
+                            dateOfBirth = JOptionPane.showInputDialog("Invalid! Third character must be a dash - Please re-enter");
+                    else
+                        dateOfBirth = JOptionPane.showInputDialog("Invalid! Must have <= 31 days in any month - Please re-enter");
+                }
+                else
+                    dateOfBirth = JOptionPane.showInputDialog("Invalid! Day part must both be digits - Please re-enter");
+            else
+                dateOfBirth = JOptionPane.showInputDialog("Invalid! Date of birth must have exactly 8 characters - Please re-enter");
+        }
+
         password = JOptionPane.showInputDialog("Enter Member's Password");
         if(password.length()>20 || password.length()<=5){
             member.setPassword(JOptionPane.showInputDialog("Password must be between 6 and 20 characters. Please enter a different password"));
@@ -395,6 +526,7 @@ class LibrarySystem extends JFrame implements ActionListener {
         else if(password == null || password.equals("") || password.equals(" ")){
             member.setSurname(JOptionPane.showInputDialog("Password must not be empty"));
         }
+
         address = JOptionPane.showInputDialog("Enter Member's Address");
         if(address.length()>30){
             member.setAddress(JOptionPane.showInputDialog("Address is too long. Please enter a different address"));
@@ -402,11 +534,51 @@ class LibrarySystem extends JFrame implements ActionListener {
         else if(address == null || address.equals("") || address.equals(" ")){
             member.setSurname(JOptionPane.showInputDialog("Address must not be empty"));
         }
-        phone = Integer.parseInt(JOptionPane.showInputDialog("Enter Member's Phone Number"));
 
-        member = new Member(forename,surname,email,password,address,phone);
+        phone = JOptionPane.showInputDialog("Enter Member's Phone Number");
+        valid = false;
+
+        while(!valid)
+        {
+            if(phone.length()==12)
+            {
+                if(phone.startsWith("(0"))
+                {
+                    if(phone.charAt(2)>='1' && phone.charAt(3)<='9')
+                    {
+                        if(phone.charAt(3)>='1' && phone.charAt(3)<='9')
+                        {
+                            if(phone.charAt(4)==')')
+                            {
+                                for(j=5;j<12;j++)
+                                    if(!Character.isDigit(phone.charAt(j)))
+                                        break;
+
+                                if(j==12)
+                                    valid=true;
+                                else
+                                    phone = JOptionPane.showInputDialog("Invalid! The last 7 characters must all be digits. Please re-enter");
+                            }
+                            else
+                                phone = JOptionPane.showInputDialog("Invalid! 5th character must be ). Please re-enter");
+                        }
+                        else
+                            phone = JOptionPane.showInputDialog("Invalid! 4th character must be in the range 1 to 9. Please re-enter");
+                    }
+                    else
+                        phone = JOptionPane.showInputDialog("Invalid! 3rd character must be in the range 1 to 9. Please re-enter");
+                }
+                else
+                    phone = JOptionPane.showInputDialog("Invalid! Must begin with (0. Please re-enter");
+            }
+            else
+                phone = JOptionPane.showInputDialog("Invalid! Must have exactly 12 characters. Please re-enter");
+        }
+
+        member = new Member(forename,surname,email,dateOfBirth,password,address,phone);
         members.add(member);
         JOptionPane.showMessageDialog(null,"Member " + forename + " " + surname + " added to the system");
+
     }
 
     public void viewMembers() {
@@ -431,6 +603,8 @@ class LibrarySystem extends JFrame implements ActionListener {
             output.append(members.get(selected).toString());
 
             JOptionPane.showMessageDialog(null,output,"Member Details",JOptionPane.PLAIN_MESSAGE);
+
+
         }
     }
 
@@ -455,6 +629,8 @@ class LibrarySystem extends JFrame implements ActionListener {
             members.remove(selected);
 
             JOptionPane.showMessageDialog(null, "Member Removed", "Removed", JOptionPane.INFORMATION_MESSAGE);
+
+
         }
     }
 
@@ -463,8 +639,9 @@ class LibrarySystem extends JFrame implements ActionListener {
         String surname = "0";
         String password = "0";
         String email = "0";
+        String dateOfBirth;
         String address = "0";
-        int phone = 0;
+        String phone = "0";
 
         JComboBox memberCombo = new JComboBox();
         JTextArea output = new JTextArea();
@@ -567,6 +744,49 @@ class LibrarySystem extends JFrame implements ActionListener {
                     email = JOptionPane.showInputDialog("Invalid! Email value must have between 7 and 322 characters inclusive");
             }
 
+            member.setDateOfBirth(JOptionPane.showInputDialog("Enter Members Date of Birth"));
+            dateOfBirth = JOptionPane.showInputDialog("Please enter the date of birth in the form dd-mm-yy");
+            {
+                if(dateOfBirth.length()==8)
+                    if(Character.isDigit(dateOfBirth.charAt(0)) && Character.isDigit(dateOfBirth.charAt(1)))
+                    {
+                        int dayPart = Integer.parseInt(dateOfBirth.substring(0,2));
+
+                        if(dayPart>=1 && dayPart<=31)
+                            if(dateOfBirth.charAt(2)=='-')
+                                if(Character.isDigit(dateOfBirth.charAt(3)) && Character.isDigit(dateOfBirth.charAt(4)))
+                                {
+                                    int monthPart = Integer.parseInt(dateOfBirth.substring(3, 5));
+
+                                    if(monthPart>=1 && monthPart<=12)
+                                        if(dateOfBirth.charAt(5)=='-')
+                                            if(Character.isDigit(dateOfBirth.charAt(6)) && Character.isDigit(dateOfBirth.charAt(7)))
+                                                if((monthPart == 1 || monthPart == 3 || monthPart == 5 || monthPart == 7 || monthPart == 8 || monthPart == 10 ||
+                                                        monthPart == 12) && dayPart<=31 || (monthPart == 4 || monthPart == 6 || monthPart == 9 || monthPart == 11) &&
+                                                        dayPart<=30 || monthPart == 2 && dayPart<=28) {
+                                                }
+                                                else
+                                                    dateOfBirth = JOptionPane.showInputDialog("Invalid! Too many days for this month value - Please re-enter");
+                                            else
+                                                dateOfBirth = JOptionPane.showInputDialog("Invalid! Year part must both be digits - Please re-enter");
+                                        else
+                                            dateOfBirth = JOptionPane.showInputDialog("Invalid! Sixth character must be a dash - Please re-enter");
+                                    else
+                                        dateOfBirth = JOptionPane.showInputDialog("Invalid! Month value must be <= 12 - Please re-enter");
+                                }
+                                else
+                                    dateOfBirth = JOptionPane.showInputDialog("Invalid! Month part must both be digits - Please re-enter");
+                            else
+                                dateOfBirth = JOptionPane.showInputDialog("Invalid! Third character must be a dash - Please re-enter");
+                        else
+                            dateOfBirth = JOptionPane.showInputDialog("Invalid! Must have <= 31 days in any month - Please re-enter");
+                    }
+                    else
+                        dateOfBirth = JOptionPane.showInputDialog("Invalid! Day part must both be digits - Please re-enter");
+                else
+                    dateOfBirth = JOptionPane.showInputDialog("Invalid! Date of birth must have exactly 8 characters - Please re-enter");
+            }
+
             member.setPassword(JOptionPane.showInputDialog("Enter Member's Password"));
             if(password.length()>20 || password.length()<=5){
                 member.setPassword(JOptionPane.showInputDialog("Password must be between 6 and 20 characters. Please enter a different password"));
@@ -574,6 +794,7 @@ class LibrarySystem extends JFrame implements ActionListener {
             else if(password == null || password.equals("") || password.equals(" ")){
                 member.setSurname(JOptionPane.showInputDialog("Password must not be empty"));
             }
+
             member.setAddress(JOptionPane.showInputDialog("Enter Member's Address"));
             if(address.length()>30){
                 member.setAddress(JOptionPane.showInputDialog("Address is too long. Please enter a different address"));
@@ -581,8 +802,46 @@ class LibrarySystem extends JFrame implements ActionListener {
             else if(address == null || address.equals("") || address.equals(" ")){
                 member.setSurname(JOptionPane.showInputDialog("Address must not be empty"));
             }
-            member.setPhone(Integer.parseInt(JOptionPane.showInputDialog("Enter Member's Phone Number")));
 
+            member.setPhone(JOptionPane.showInputDialog("Enter Member's Phone Number"));
+            valid = false;
+
+            while(!valid)
+            {
+                if(phone.length()==12)
+                {
+                    if(phone.startsWith("(0"))
+                    {
+                        if(phone.charAt(2)>='1' && phone.charAt(3)<='9')
+                        {
+                            if(phone.charAt(3)>='1' && phone.charAt(3)<='9')
+                            {
+                                if(phone.charAt(4)==')')
+                                {
+                                    for(j=5;j<12;j++)
+                                        if(!Character.isDigit(phone.charAt(j)))
+                                            break;
+
+                                    if(j==12)
+                                        valid=true;
+                                    else
+                                        phone = JOptionPane.showInputDialog("Invalid! The last 7 characters must all be digits. Please re-enter");
+                                }
+                                else
+                                    phone = JOptionPane.showInputDialog("Invalid! 5th character must be ). Please re-enter");
+                            }
+                            else
+                                phone = JOptionPane.showInputDialog("Invalid! 4th character must be in the range 1 to 9. Please re-enter");
+                        }
+                        else
+                            phone = JOptionPane.showInputDialog("Invalid! 3rd character must be in the range 1 to 9. Please re-enter");
+                    }
+                    else
+                        phone = JOptionPane.showInputDialog("Invalid! Must begin with (0. Please re-enter");
+                }
+                else
+                    phone = JOptionPane.showInputDialog("Invalid! Must have exactly 12 characters. Please re-enter");
+            }
 
             JOptionPane.showMessageDialog(null,"Updated Members details");
         }
@@ -593,6 +852,7 @@ class LibrarySystem extends JFrame implements ActionListener {
         JTextArea output = new JTextArea();
 
         output.setText("Book Details:\n");
+
 
         if (books.size() < 1) {
             JOptionPane.showMessageDialog(null, "No books have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -607,6 +867,7 @@ class LibrarySystem extends JFrame implements ActionListener {
 
             int selected = bookCombo.getSelectedIndex();
             output.append(books.get(selected).toString());
+
         }
     }
 
@@ -617,7 +878,6 @@ class LibrarySystem extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String menuName = e.getActionCommand();
-
 
         if(menuName == "Add Member" || e.getSource() == addMemberButton) {
             addMember();
@@ -648,7 +908,6 @@ class LibrarySystem extends JFrame implements ActionListener {
         }else if(menuName.equals("Pay Fine")) {
             returnBook();
         }
-
 
     }
 }

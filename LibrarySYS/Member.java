@@ -7,20 +7,22 @@ public class Member {
     private String surname;
     private String password;
     private String email;
+    private String dateOfBirth;
     private String address;
-    private int phone;
+    private String phone;
     private static int count = 1;
 
     public Member() {
-        this("NA", "NA", "NA", "NA", "NA", 0);
+        this("NA", "NA", "NA","NA", "NA", "NA", "0");
     }
 
-    public Member(String forename, String surname, String password, String email, String address, int phone) {
+    public Member(String forename, String surname, String password, String email,String dateOfBirth, String address, String phone) {
         setMemberID();
         setForename(forename);
         setSurname(surname);
         setPassword(password);
         setEmail(email);
+        setDateOfBirth(dateOfBirth);
         setAddress(address);
         setPhone(phone);
     }
@@ -65,6 +67,14 @@ public class Member {
         this.email = email;
     }
 
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -73,11 +83,11 @@ public class Member {
         this.address = address;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -88,6 +98,7 @@ public class Member {
                 "\nSurname: " + getSurname() +
                 "\nPassword: " + getPassword() +
                 "\nE-mail: " + getEmail() +
+                "\nDate of Birth: " + getDateOfBirth() +
                 "\nAddress: " + getAddress() +
                 "\nPhone Number: " + getPhone();
     }
