@@ -5,6 +5,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -26,6 +27,14 @@ class LibrarySystem extends JFrame implements ActionListener {
         super("Library System");
 
         setLayout(new GridBagLayout());
+
+        try {
+            setIconImage(new ImageIcon(getClass().getResource("book_logo.png")).getImage());
+        }
+        catch(Exception ex) {
+
+            JOptionPane.showMessageDialog(null,"Invalid Logo Image File in Main Screen");
+        }
 
         createBookMenu();
         createMemberMenu();
@@ -74,6 +83,9 @@ class LibrarySystem extends JFrame implements ActionListener {
 
     ArrayList<Member> members = new ArrayList<>();
     private Member member;
+
+    ArrayList<Loan> loans = new ArrayList<>();
+    private Loan loan;
 
     public static void main(String[] args) {
         new LibrarySystem();
@@ -240,10 +252,9 @@ class LibrarySystem extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(null,"No books have been  added to the system yet.","Warning",JOptionPane.WARNING_MESSAGE);
         }
         else {
-            Iterator<Book> iterator = books.iterator();
 
-            while(iterator.hasNext()) {
-                bookCombo.addItem(iterator.next().getTitle() + "\n");
+            for (Book value : books) {
+                bookCombo.addItem(value.getTitle() + "\n");
             }
 
             JOptionPane.showMessageDialog(null,bookCombo,"Select Book to view details",JOptionPane.PLAIN_MESSAGE);
@@ -297,10 +308,9 @@ class LibrarySystem extends JFrame implements ActionListener {
         if (books.size() < 1) {
             JOptionPane.showMessageDialog(null, "No books have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
         } else {
-            Iterator<Book> iterator = books.iterator();
 
-            while (iterator.hasNext()) {
-                bookCombo.addItem(iterator.next().getTitle() + "\n");
+            for (Book value : books) {
+                bookCombo.addItem(value.getTitle() + "\n");
             }
 
             JOptionPane.showMessageDialog(null, bookCombo, "Select Book to update details", JOptionPane.PLAIN_MESSAGE);
@@ -411,9 +421,9 @@ class LibrarySystem extends JFrame implements ActionListener {
         }
 
         email = JOptionPane.showInputDialog("Enter Member's E-mail");
-        int locationOfAtSymbol=0,j;
+        int locationOfAtSymbol,j;
         char ch;
-        String domainName="",recipient="";
+        String domainName,recipient;
         boolean valid = false;
 
         while(!valid)
@@ -604,7 +614,6 @@ class LibrarySystem extends JFrame implements ActionListener {
 
             JOptionPane.showMessageDialog(null,output,"Member Details",JOptionPane.PLAIN_MESSAGE);
 
-
         }
     }
 
@@ -678,9 +687,9 @@ class LibrarySystem extends JFrame implements ActionListener {
             }
 
             member.setEmail(JOptionPane.showInputDialog("Enter Member's E-mail"));
-            int locationOfAtSymbol=0,j;
+            int locationOfAtSymbol,j;
             char ch;
-            String domainName="",recipient="";
+            String domainName,recipient;
             boolean valid = false;
 
             while(!valid)
@@ -848,30 +857,112 @@ class LibrarySystem extends JFrame implements ActionListener {
     }
 
     public void borrowBook() {
-        JComboBox bookCombo = new JComboBox();
+         int MemberID;
+         int BookID;
+         LocalDate loanedDate = LocalDate.now();
+         LocalDate dueDate = loanedDate.plusDays(7);
+
+        JComboBox memberCombo = new JComboBox();
         JTextArea output = new JTextArea();
+        JComboBox bookCombo = new JComboBox();
+        JTextArea outputBook = new JTextArea();
 
-        output.setText("Book Details:\n");
 
+        if(members.size() < 1) {
+            JOptionPane.showMessageDialog(null,"No members have been  added to the system yet.","Warning",JOptionPane.WARNING_MESSAGE);
+        }
+        else {
 
-        if (books.size() < 1) {
-            JOptionPane.showMessageDialog(null, "No books have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
-        } else {
-            Iterator<Book> iterator = books.iterator();
-
-            while (iterator.hasNext()) {
-                bookCombo.addItem(iterator.next().getTitle() + "\n");
+            for (Member item : members) {
+                memberCombo.addItem(item.getSurname() + "\n");
             }
 
-            JOptionPane.showMessageDialog(null, bookCombo, "Select a book to borrow", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, memberCombo, "Select Member to loan a book", JOptionPane.PLAIN_MESSAGE);
 
-            int selected = bookCombo.getSelectedIndex();
-            output.append(books.get(selected).toString());
+            int selected = memberCombo.getSelectedIndex();
+            output.append(members.get(selected).toString());
 
+            MemberID = member.getMemberID();
+
+            if (books.size() < 1) {
+                JOptionPane.showMessageDialog(null, "No books have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else {
+                if (book.getStatus()=='A') {
+
+                    for (Book value : books) {
+                        bookCombo.addItem(value.getTitle() + "\n");
+                    }
+                }
+
+                JOptionPane.showMessageDialog(null, bookCombo, "Select a book to loan", JOptionPane.PLAIN_MESSAGE);
+
+                int selectedBook = bookCombo.getSelectedIndex();
+                outputBook.append(books.get(selectedBook).toString());
+
+                BookID = book.getBookID();
+                book.setStatus('U');
+
+                loan = new Loan(MemberID, BookID, loanedDate, dueDate, null);
+                loans.add(loan);
+
+                JOptionPane.showMessageDialog(null, "Loan '" + loan.getLoanID() + "' added to the system");
+            }
         }
     }
 
+
     public void returnBook(){
+        JComboBox returnCombo = new JComboBox();
+        JTextArea output = new JTextArea();
+
+
+        if (loans.size() < 1) {
+            JOptionPane.showMessageDialog(null, "No Loans have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            for (Loan value : loans) {
+                returnCombo.addItem(value.getLoanID() + "\n");
+            }
+
+            JOptionPane.showMessageDialog(null, returnCombo, "Select Book to return", JOptionPane.PLAIN_MESSAGE);
+
+            int selected = returnCombo.getSelectedIndex();
+            output.append(loans.get(selected).toString());
+
+            loan.setReturnedDate(LocalDate.now());
+
+            book.setStatus('A');
+
+            JOptionPane.showMessageDialog(null,"Returned Book");
+        }
+
+    }
+
+    public void viewLoan(){
+        JComboBox loanCombo = new JComboBox();
+        JTextArea output = new JTextArea();
+
+        output.setText("Loan Details:\n");
+
+        if(loans.size() < 1) {
+            JOptionPane.showMessageDialog(null,"No loans been  added to the system yet.","Warning",JOptionPane.WARNING_MESSAGE);
+        }
+        else {
+
+            for (Loan value : loans) {
+                loanCombo.addItem(value.getLoanID() + "\n");
+            }
+
+            JOptionPane.showMessageDialog(null, loanCombo, "Select Loan to view details", JOptionPane.PLAIN_MESSAGE);
+
+            int selected = loanCombo.getSelectedIndex();
+            output.append(loans.get(selected).toString());
+
+            JOptionPane.showMessageDialog(null, output, "Loan Details", JOptionPane.PLAIN_MESSAGE);
+        }
+    }
+
+    public void payFine(){
 
     }
 
@@ -879,7 +970,7 @@ class LibrarySystem extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String menuName = e.getActionCommand();
 
-        if(menuName == "Add Member" || e.getSource() == addMemberButton) {
+        if(menuName.equals("Add Member") || e.getSource() == addMemberButton) {
             addMember();
         } else if(menuName.equals("View Member Profile")) {
             viewMembers();
@@ -889,7 +980,7 @@ class LibrarySystem extends JFrame implements ActionListener {
             updateMember();
         }
 
-        if(menuName == "Add Book" || e.getSource() == addBookButton) {
+        if(menuName.equals("Add Book") || e.getSource() == addBookButton) {
             addBook();
         } else if(menuName.equals("View Book")) {
             viewBooks();
@@ -899,14 +990,14 @@ class LibrarySystem extends JFrame implements ActionListener {
             updateBook();
         }
 
-        if(menuName == "Borrow Book" || e.getSource() == borrowBookButton) {
+        if(menuName.equals("Borrow Book") || e.getSource() == borrowBookButton) {
             borrowBook();
         } else if(menuName.equals("Return Book")) {
             returnBook();
         }else if(menuName.equals("View Loan")) {
-            returnBook();
+            viewLoan();
         }else if(menuName.equals("Pay Fine")) {
-            returnBook();
+            payFine();
         }
 
     }

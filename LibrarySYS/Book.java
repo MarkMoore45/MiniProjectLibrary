@@ -22,7 +22,6 @@ public class Book {
         setTitle(title);
         setAuthor(author);
         setGenre(genre);
-
         setPages(pages);
         setStatus(status);
     }
