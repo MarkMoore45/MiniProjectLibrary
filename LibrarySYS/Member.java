@@ -12,10 +12,6 @@ public class Member {
     private String phone;
     private static int count = 1;
 
-    public Member() {
-        this("NA", "NA", "NA","NA", "NA", "NA", "0");
-    }
-
     public Member(String forename, String surname, String password, String email,String dateOfBirth, String address, String phone) {
         setMemberID();
         setForename(forename);

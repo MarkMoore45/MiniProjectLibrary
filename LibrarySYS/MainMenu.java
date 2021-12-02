@@ -5,6 +5,9 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,7 +26,6 @@ class LibrarySystem extends JFrame implements ActionListener {
 
     public LibrarySystem() {
 
-
         super("Library System");
 
         setLayout(new GridBagLayout());
@@ -39,6 +41,7 @@ class LibrarySystem extends JFrame implements ActionListener {
         createBookMenu();
         createMemberMenu();
         createLoanMenu();
+        createFileMenu();
 
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -76,6 +79,114 @@ class LibrarySystem extends JFrame implements ActionListener {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+
+        open();
+    }
+
+    public void save() throws IOException {
+        ObjectOutputStream memberOS = new ObjectOutputStream(new FileOutputStream("members.dat"));
+        memberOS.writeObject(members);
+        memberOS.close();
+
+        ObjectOutputStream bookOS = new ObjectOutputStream(new FileOutputStream("books.dat"));
+        bookOS.writeObject(books);
+        bookOS.close();
+
+        ObjectOutputStream loanOS = new ObjectOutputStream(new FileOutputStream("loans.dat"));
+        loanOS.writeObject(loans);
+        loanOS.close();
+
+    }
+
+
+    public void open() {
+        try {
+
+            File memberFile = new File("members.dat");
+            File bookFile = new File("books.dat");
+            File loanFile = new File("loans.dat");
+
+            if(memberFile.exists()) { 
+
+                
+                ObjectInputStream is = new ObjectInputStream(new FileInputStream(memberFile));
+                members = (ArrayList<Member>) is.readObject();
+                is.close();
+
+
+
+                JOptionPane.showMessageDialog(null, memberFile.getName() + " file loaded into the system", "Open", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else{
+                memberFile.createNewFile();
+                JOptionPane.showMessageDialog(null, "File just created!!", "Created " + memberFile.getName() + " file", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            if(bookFile.exists()) {
+
+
+                ObjectInputStream is = new ObjectInputStream(new FileInputStream(bookFile));
+                books = (ArrayList<Book>) is.readObject();
+                is.close();
+
+
+
+                JOptionPane.showMessageDialog(null, bookFile.getName() + " file loaded into the system", "Open", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else{
+                bookFile.createNewFile();
+                JOptionPane.showMessageDialog(null, "File just created!!", "Created " + bookFile.getName() + " file", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            if(loanFile.exists()) {
+
+
+                ObjectInputStream is = new ObjectInputStream(new FileInputStream(loanFile));
+                loans = (ArrayList<Loan>) is.readObject();
+                is.close();
+
+
+                JOptionPane.showMessageDialog(null, loanFile.getName() + " file loaded into the system", "Open", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else{
+                loanFile.createNewFile();
+                JOptionPane.showMessageDialog(null, "File just created!!", "Created " + loanFile.getName() + " file", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        catch(ClassNotFoundException cce) {
+            JOptionPane.showMessageDialog(null,"Class of object deserialized not a match for anything used in this application","Error",JOptionPane.ERROR_MESSAGE);
+            cce.printStackTrace();
+        } catch (FileNotFoundException fileNotFoundException) {
+            JOptionPane.showMessageDialog(null,"File not found","Error",JOptionPane.ERROR_MESSAGE);
+            fileNotFoundException.printStackTrace();
+        }
+        catch (IOException ioe) {
+            JOptionPane.showMessageDialog(null,"Problem reading from the file","Error",JOptionPane.ERROR_MESSAGE);
+            ioe.printStackTrace();
+        }
+    }
+
+    public void createFileMenu() {
+
+        addWindowListener(new WindowAdapter()  {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int option = JOptionPane.showConfirmDialog(null,"Are you sure you want to exit?","Confirmation",JOptionPane.YES_NO_OPTION);
+
+                if(option == JOptionPane.YES_OPTION) {
+                    try {
+                        save();
+                        JOptionPane.showMessageDialog(null,"Data saved successfully","Saved",JOptionPane.INFORMATION_MESSAGE);
+                    } catch (IOException e1) {
+                        JOptionPane.showMessageDialog(null,"Not able to save the file");
+                        e1.printStackTrace();
+                    }
+
+                    System.exit(0);
+                }
+            }
+        });
+
     }
 
     ArrayList<Book> books = new ArrayList<>();
@@ -147,10 +258,6 @@ class LibrarySystem extends JFrame implements ActionListener {
         loanMenu.add(item);
 
         item = new JMenuItem("View Loan");
-        item.addActionListener(this);
-        loanMenu.add(item);
-
-        item = new JMenuItem("Pay Fines");
         item.addActionListener(this);
         loanMenu.add(item);
     }
@@ -962,9 +1069,6 @@ class LibrarySystem extends JFrame implements ActionListener {
         }
     }
 
-    public void payFine(){
-
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -996,9 +1100,8 @@ class LibrarySystem extends JFrame implements ActionListener {
             returnBook();
         }else if(menuName.equals("View Loan")) {
             viewLoan();
-        }else if(menuName.equals("Pay Fine")) {
-            payFine();
         }
+
 
     }
 }
