@@ -743,7 +743,6 @@ class LibrarySystem extends JFrame implements ActionListener {
         JComboBox memberCombo = new JComboBox();
         JTextArea output = new JTextArea();
 
-
         if (members.size() < 1) {
             JOptionPane.showMessageDialog(null, "No members have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
         } else {
@@ -982,7 +981,7 @@ class LibrarySystem extends JFrame implements ActionListener {
             int selected = memberCombo.getSelectedIndex();
             output.append(members.get(selected).toString());
 
-            MemberID = loan.getMemberID();
+            MemberID = member.getMemberID();
 
             if (books.size() < 1) {
                 JOptionPane.showMessageDialog(null, "No books have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -999,7 +998,7 @@ class LibrarySystem extends JFrame implements ActionListener {
                 int selectedBook = bookCombo.getSelectedIndex();
                 outputBook.append(books.get(selectedBook).toString());
 
-                BookID = loan.getBookID();
+                BookID = book.getBookID();
                 book.setStatus('U');
 
                 loan = new Loan(MemberID, BookID, loanedDate, dueDate, null);
