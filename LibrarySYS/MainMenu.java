@@ -272,12 +272,7 @@ class LibrarySystem extends JFrame implements ActionListener {
 
         ISBN = JOptionPane.showInputDialog("Enter Books's ISBN");
 
-        while(!ISBN.equals(""))
-        {
-            boolean valid = false;
 
-            while(!valid)
-            {
                 if(ISBN.length()==10)
                 {
                     int j;
@@ -299,12 +294,10 @@ class LibrarySystem extends JFrame implements ActionListener {
                             else
                                 lastCharAsInt = 10;
 
-                            if(11-sum%11 == lastCharAsInt)
+                            if(11-sum%11 != lastCharAsInt)
                             {
-                                valid = true;
-                            }
-                            else
                                 ISBN = JOptionPane.showInputDialog("Invalid! ISBN fails the golden rule. Please re-enter");
+                            }
                         }
                         else
                             ISBN = JOptionPane.showInputDialog("Invalid! Last character must be a digit, an 'X' or an 'x'. Please re-enter");
@@ -313,9 +306,8 @@ class LibrarySystem extends JFrame implements ActionListener {
                 }
                 else
                     ISBN = JOptionPane.showInputDialog("Invalid! ISBN must have exactly 10 characters. Please re-enter");
-            }
-            ISBN = JOptionPane.showInputDialog("Please enter another ISBN");
-        }
+
+
 
         title = JOptionPane.showInputDialog("Enter Books's Title");
         if(title.length()>40){
@@ -426,50 +418,39 @@ class LibrarySystem extends JFrame implements ActionListener {
             output.append(books.get(selected).toString());
 
             book.setISBN(JOptionPane.showInputDialog("Enter Books's ISBN"));
-            while(!ISBN.equals(""))
+            if(ISBN.length()==10)
             {
-                boolean valid = false;
+                int j;
+                for(j=0; j<=8; j++)
+                    if(!Character.isDigit(ISBN.charAt(j)))
+                        break;
 
-                while(!valid)
-                {
-                    if(ISBN.length()==10)
+                if(j==9)
+                    if(Character.isDigit(ISBN.charAt(9)) || ISBN.charAt(9)=='X' || ISBN.charAt(9)=='x')
                     {
-                        int j;
-                        for(j=0; j<=8; j++)
-                            if(!Character.isDigit(ISBN.charAt(j)))
-                                break;
+                        int sum=0;
+                        int lastCharAsInt;
 
-                        if(j==9)
-                            if(Character.isDigit(ISBN.charAt(9)) || ISBN.charAt(9)=='X' || ISBN.charAt(9)=='x')
-                            {
-                                int sum=0;
-                                int lastCharAsInt;
+                        for(j=0;j<=8;j++)
+                            sum+=Character.getNumericValue(ISBN.charAt(j))*(10-j);
 
-                                for(j=0;j<=8;j++)
-                                    sum+=Character.getNumericValue(ISBN.charAt(j))*(10-j);
-
-                                if(Character.isDigit(ISBN.charAt(9)))
-                                    lastCharAsInt = Character.getNumericValue(ISBN.charAt(9));
-                                else
-                                    lastCharAsInt = 10;
-
-                                if(11-sum%11 == lastCharAsInt)
-                                {
-                                    valid = true;
-                                }
-                                else
-                                    ISBN = JOptionPane.showInputDialog("Invalid! ISBN fails the golden rule. Please re-enter");
-                            }
-                            else
-                                ISBN = JOptionPane.showInputDialog("Invalid! Last character must be a digit, an 'X' or an 'x'. Please re-enter");
+                        if(Character.isDigit(ISBN.charAt(9)))
+                            lastCharAsInt = Character.getNumericValue(ISBN.charAt(9));
                         else
-                            ISBN = JOptionPane.showInputDialog("Invalid! First 9 characters must be digits. Please re-enter");
+                            lastCharAsInt = 10;
+
+                        if(11-sum%11 != lastCharAsInt)
+                        {
+                            ISBN = JOptionPane.showInputDialog("Invalid! ISBN fails the golden rule. Please re-enter");
+                        }
                     }
                     else
-                        ISBN = JOptionPane.showInputDialog("Invalid! ISBN must have exactly 10 characters. Please re-enter");
-                }
-                ISBN = JOptionPane.showInputDialog("Please enter another ISBN");
+                        ISBN = JOptionPane.showInputDialog("Invalid! Last character must be a digit, an 'X' or an 'x'. Please re-enter");
+                else
+                    ISBN = JOptionPane.showInputDialog("Invalid! First 9 characters must be digits. Please re-enter");
             }
+            else
+                ISBN = JOptionPane.showInputDialog("Invalid! ISBN must have exactly 10 characters. Please re-enter");
 
 
             book.setTitle(JOptionPane.showInputDialog("Enter Books's Title"));
@@ -637,11 +618,11 @@ class LibrarySystem extends JFrame implements ActionListener {
         }
 
         password = JOptionPane.showInputDialog("Enter Member's Password");
-        if(password.length()>20 || password.length()<=5){
-            member.setPassword(JOptionPane.showInputDialog("Password must be between 6 and 20 characters. Please enter a different password"));
-        }
-        else if(password == null || password.equals("") || password.equals(" ")){
+         if(password == null || password.equals("") || password.equals(" ")){
             member.setSurname(JOptionPane.showInputDialog("Password must not be empty"));
+        }
+        else if(password.length()>20 || password.length()<=5){
+            member.setPassword(JOptionPane.showInputDialog("Password must be between 6 and 20 characters. Please enter a different password"));
         }
 
         address = JOptionPane.showInputDialog("Enter Member's Address");
@@ -966,6 +947,18 @@ class LibrarySystem extends JFrame implements ActionListener {
     public void borrowBook() {
          int MemberID;
          int BookID;
+
+        //use LocalDate and add days
+        /*******************************************************************
+         *Title: Java 8 – Adding Days to the LocalDate
+         *Author: Chaitanya Singh
+         *Site owner/sponsor: stackoverflow.com
+         *Date: Nov 15 2017
+         *Code Version: Nov 15 2017
+         *Availability: https://beginnersbook.com/2017/11/java-8-adding-days-to-the-localdate/#:~:text=Java%20LocalDate%20Example%201%3A%20Adding%20Days%20to%20the,the%20specified%20number%20of%20days%20to%20the%20LocalDate
+         *Modified: Code refactored
+         *******************************************************************/
+
          LocalDate loanedDate = LocalDate.now();
          LocalDate dueDate = loanedDate.plusDays(7);
 
@@ -989,7 +982,7 @@ class LibrarySystem extends JFrame implements ActionListener {
             int selected = memberCombo.getSelectedIndex();
             output.append(members.get(selected).toString());
 
-            MemberID = member.getMemberID();
+            MemberID = loan.getMemberID();
 
             if (books.size() < 1) {
                 JOptionPane.showMessageDialog(null, "No books have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -1006,7 +999,7 @@ class LibrarySystem extends JFrame implements ActionListener {
                 int selectedBook = bookCombo.getSelectedIndex();
                 outputBook.append(books.get(selectedBook).toString());
 
-                BookID = book.getBookID();
+                BookID = loan.getBookID();
                 book.setStatus('U');
 
                 loan = new Loan(MemberID, BookID, loanedDate, dueDate, null);
@@ -1022,7 +1015,6 @@ class LibrarySystem extends JFrame implements ActionListener {
         JComboBox returnCombo = new JComboBox();
         JTextArea output = new JTextArea();
 
-
         if (loans.size() < 1) {
             JOptionPane.showMessageDialog(null, "No Loans have been  added to the system yet.", "Warning", JOptionPane.WARNING_MESSAGE);
         } else {
@@ -1031,7 +1023,7 @@ class LibrarySystem extends JFrame implements ActionListener {
                 returnCombo.addItem(value.getLoanID() + "\n");
             }
 
-            JOptionPane.showMessageDialog(null, returnCombo, "Select Book to return", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, returnCombo, "Select Loan to return its Book", JOptionPane.PLAIN_MESSAGE);
 
             int selected = returnCombo.getSelectedIndex();
             output.append(loans.get(selected).toString());

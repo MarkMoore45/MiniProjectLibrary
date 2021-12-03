@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>LibrarySYS</OriginalElement>
+  <nodes>
+    <node x="0.0" y="22.0">LibrarySYS.Loan</node>
+    <node x="314.0" y="0.0">LibrarySYS.Member</node>
+    <node x="370.0" y="361.0">LibrarySYS.LibrarySystem</node>
+    <node x="692.0" y="11.0">LibrarySYS.Book</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Loan" relationship="TO_MANY">
+      <point x="-78.66666666666669" y="-392.0" />
+      <point x="409.33333333333337" y="331.0" />
+      <point x="152.10000000000008" y="331.0" />
+      <point x="152.10000000000008" y="321.0" />
+      <point x="220.5" y="321.0" />
+      <point x="73.5" y="128.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Book" relationship="TO_MANY">
+      <point x="78.66666666666666" y="-392.0" />
+      <point x="566.6666666666667" y="341.0" />
+      <point x="836.1" y="341.0" />
+      <point x="836.1" y="331.0" />
+      <point x="900.5" y="331.0" />
+      <point x="69.5" y="139.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Loan" relationship="TO_ONE">
+      <point x="-52.44444444444446" y="-392.0" />
+      <point x="435.55555555555554" y="331.0" />
+      <point x="152.10000000000008" y="331.0" />
+      <point x="152.10000000000008" y="321.0" />
+      <point x="220.5" y="321.0" />
+      <point x="73.5" y="128.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Member" relationship="TO_ONE">
+      <point x="0.0" y="-392.0" />
+      <point x="488.1000000000001" y="321.0" />
+      <point x="403.5" y="321.0" />
+      <point x="-89.5" y="150.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Book" relationship="CREATE">
+      <point x="52.44444444444446" y="-392.0" />
+      <point x="540.4444444444445" y="331.0" />
+      <point x="761.5" y="331.0" />
+      <point x="-69.5" y="139.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Member" relationship="TO_MANY">
+      <point x="-26.22222222222223" y="-392.0" />
+      <point x="461.7777777777778" y="341.0" />
+      <point x="488.1000000000001" y="341.0" />
+      <point x="488.1000000000001" y="321.0" />
+      <point x="403.5" y="321.0" />
+      <point x="-89.5" y="150.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Member" relationship="CREATE">
+      <point x="26.22222222222223" y="-392.0" />
+      <point x="514.2222222222223" y="321.0" />
+      <point x="582.5" y="321.0" />
+      <point x="89.5" y="150.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Loan" relationship="CREATE">
+      <point x="-104.88888888888891" y="-392.0" />
+      <point x="383.1111111111111" y="341.0" />
+      <point x="73.5" y="341.0" />
+      <point x="-73.5" y="128.5" />
+    </edge>
+    <edge source="LibrarySYS.LibrarySystem" target="LibrarySYS.Book" relationship="TO_ONE">
+      <point x="104.88888888888889" y="-392.0" />
+      <point x="592.8888888888889" y="341.0" />
+      <point x="836.1" y="341.0" />
+      <point x="836.1" y="331.0" />
+      <point x="900.5" y="331.0" />
+      <point x="69.5" y="139.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.85" showDependencies="true" x="107.5" y="91.50000000000006" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

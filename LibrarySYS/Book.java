@@ -29,7 +29,7 @@ public class Book {
      */
 
     public Book(String ISBN, String title, String author, String genre, int pages, char status) {
-        setBookID();
+        setBookID(count);
         setISBN(ISBN);
         setTitle(title);
         setAuthor(author);
@@ -50,10 +50,10 @@ public class Book {
     /**
      * Method to set the ID of a Book object, where count increments to
      * generate a unique ID for each Book Object.
-    // * @param BookID the ID number of the Book
+     * @param BookID the ID number of the Book
      */
 
-    public void setBookID() {
+    public void setBookID(int BookID) {
         this.BookID = count++;
     }
 

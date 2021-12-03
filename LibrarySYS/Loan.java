@@ -8,12 +8,19 @@ public class Loan {
     private int LoanID;
     private int MemberID;
     private int BookID;
+    //use LocalDate and add days
+    /*******************************************************************
+     *Title: Java 8 – Adding Days to the LocalDate
+     *Author: Chaitanya Singh
+     *Site owner/sponsor: beginnersbook.com
+     *Date: Nov 15 2017
+     *Code Version: Nov 15 2017
+     *Availability: https://beginnersbook.com/2017/11/java-8-adding-days-to-the-localdate/#:~:text=Java%20LocalDate%20Example%201%3A%20Adding%20Days%20to%20the,the%20specified%20number%20of%20days%20to%20the%20LocalDate
+     *Modified: Code refactored
+     *******************************************************************/
     private LocalDate loanedDate = LocalDate.now();
-    //https://beginnersbook.com/2017/11/java-8-adding-days-to-the-localdate/#:~:text=Java%20LocalDate%20Example%201%3A%20Adding%20Days%20to%20the,the%20specified%20number%20of%20days%20to%20the%20LocalDate.
     private LocalDate dueDate = loanedDate.plusDays(7);
     private LocalDate returnedDate = LocalDate.now();
-    //https://www.tutorialspoint.com/javatime/javatime_localdate_format.htm
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/YYYY");
     private static int count = 1;
 
     public Loan(int memberID, int bookID, LocalDate loanedDate, LocalDate dueDate, LocalDate returnedDate) {
